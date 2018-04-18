@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePostsTable extends Migration
+class CreateUserRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreatePostsTable extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title');
-            $table->string('slug', 191)->unique();
-            $table->text('body');
-            $table->boolean('published')->default(false);
+        Schema::create('user_roles', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('role_id');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unique(['user_id', 'role_id']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
     }
 
@@ -33,6 +31,6 @@ class CreatePostsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('user_roles');
     }
 }
